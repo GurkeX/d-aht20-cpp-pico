@@ -73,7 +73,7 @@ DHT20::DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c) {
 }
 
 
-DHT20::DHT20(int I2C_SDA, int I2C_SCL,int i2c_instance, bool auto_init_i2c) {
+DHT20::DHT20(int I2C_SDA, int I2C_SCL, int i2c_instance, bool auto_init_i2c) {
     // Set i2c instance
     if(i2c_instance == 0) {
         this->i2c_instance = I2C0_INST;
