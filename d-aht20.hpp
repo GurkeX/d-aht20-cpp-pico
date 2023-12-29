@@ -5,8 +5,7 @@ Version: 0.0.1
 Copyright 2022 Sampsa Penna, Kimi Malkamäki
 */
 
-#ifndef PICO_DHT20_DEFINED
-#define PICO_DHT20_DEFINED
+#pragma once
 
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
@@ -28,11 +27,6 @@ Copyright 2022 Sampsa Penna, Kimi Malkamäki
 #define DHT20_ERROR_NORESET -16
 #define DHT20_ERROR_BUSY -17
 
-
-#define I2C1_INST i2c1
-#define I2C0_INST i2c0
-
-
 #define DHT20_ADDRESS 0x38
 
 /*
@@ -49,7 +43,7 @@ class DHT20 {
 public:
     DHT20(bool auto_init_i2c);
     DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c);
-    DHT20(int I2C_SDA, int I2C_SCL, int i2c_instance, bool auto_init_i2c)
+    DHT20(int I2C_SDA, int I2C_SCL, i2c_inst_t* i2c_instance, bool auto_init_i2c);
     //~DHT20();
 
     // Initialize the DHT sensor
@@ -119,7 +113,7 @@ private:
 
     int I2C_SDA;
     int I2C_SCL;
-    auto i2c_instance;
+    i2c_inst_t* i2c_instance;
 
     // Calculate checksum value
     static uint8_t _crc8(uint8_t *ptr, uint8_t len);
@@ -133,5 +127,3 @@ private:
     // init the i2c interface
     void init_i2c();
 };
-
-#endif
