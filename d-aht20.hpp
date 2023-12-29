@@ -28,11 +28,10 @@ Copyright 2022 Sampsa Penna, Kimi Malkamäki
 #define DHT20_ERROR_NORESET -16
 #define DHT20_ERROR_BUSY -17
 
-#ifdef USE_I2C_1
-#define I2C_INST i2c1
-#else
-#define I2C_INST i2c0
-#endif
+
+#define I2C1_INST i2c1
+#define I2C0_INST i2c0
+
 
 #define DHT20_ADDRESS 0x38
 
@@ -48,8 +47,9 @@ static const uint8_t __in_flash() trigger_measurement[3] = {0xAC, 0x33, 0x00};
 
 class DHT20 {
 public:
-    DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c);
     DHT20(bool auto_init_i2c);
+    DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c);
+    DHT20(int I2C_SDA, int I2C_SCL,auto i2c_instance, bool auto_init_i2c)
     //~DHT20();
 
     // Initialize the DHT sensor
@@ -119,6 +119,7 @@ private:
 
     int I2C_SDA;
     int I2C_SCL;
+    auto i2c_instance;
 
     // Calculate checksum value
     static uint8_t _crc8(uint8_t *ptr, uint8_t len);

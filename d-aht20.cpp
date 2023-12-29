@@ -6,7 +6,43 @@ Aosong AHT20/DHT20 object oriented sensor library for Raspberry Pi Pico.
 
 #include "d-aht20.hpp"
 
+DHT20::DHT20(bool auto_init_i2c) {
+    // Set default i2c instance
+    i2c_instance = I2C0_INST;
+
+    // Set default SDA and SCL pins
+    this->I2C_SDA = 4;
+    this->I2C_SCL = 5;
+
+    // Set up the i2c interface
+    if(auto_init_i2c) {
+        init_i2c();
+    }
+
+    printf("DHT20 initialization\n");
+
+    #ifndef DHT20_EXAMPLE_SKIP_INIT_SLEEP
+        sleep_ms(2000);
+    #endif
+        // Set up temp and humid sensor
+        printf("Initialize DHT20.\n");    
+        int sensor_ret = DHT20_init();
+        if (sensor_ret != DHT20_OK)
+        {
+            printf("Failed to initialize the sensor.\n");
+            printf("Sensor return value %d\n", sensor_ret);
+            return;
+        }
+        printf("Initialized DHT20.\n");
+
+        // Sleep for 10ms after successful sensor initialization
+        sleep_ms(10);
+}
+
 DHT20::DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c) {
+    // Set default i2c instance
+    i2c_instance = I2C0_INST;
+
     // Set default SDA and SCL pins
     this->I2C_SDA = I2C_SDA;
     this->I2C_SCL = I2C_SCL;
@@ -36,10 +72,18 @@ DHT20::DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c) {
         sleep_ms(10);
 }
 
-DHT20::DHT20(bool auto_init_i2c) {
+DHT20(int I2C_SDA, int I2C_SCL,int i2c_instance, bool auto_init_i2c) {
+    // Set i2c instance
+    if(i2c_instance == 0) {
+        this->i2c_instance = I2C0_INST;
+    }
+    else if(i2c_instance == 1) {
+        this->i2c_instance = I2C1_INST;
+    }
+
     // Set default SDA and SCL pins
-    this->I2C_SDA = 4;
-    this->I2C_SCL = 5;
+    this->I2C_SDA = I2C_SDA;
+    this->I2C_SCL = I2C_SCL;
 
     // Set up the i2c interface#
     if(auto_init_i2c) {
@@ -97,7 +141,7 @@ int DHT20::DHT20_init() {
 
 void DHT20::init_i2c() {
     printf("Setting up i2c\n");
-    i2c_init(I2C_INST, 100 * 1000);
+    i2c_init(i2c_instance, 100 * 1000);
     gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SDA);
@@ -112,9 +156,9 @@ void DHT20::init_i2c() {
 void DHT20::resetSensor() {
     if (needsReset())
     {
-        i2c_write_blocking(I2C_INST, DHT20_ADDRESS, rst_msg_1, 3, false);
-        i2c_write_blocking(I2C_INST, DHT20_ADDRESS, rst_msg_2, 3, false);
-        i2c_write_blocking(I2C_INST, DHT20_ADDRESS, rst_msg_3, 3, false);
+        i2c_write_blocking(i2c_instance, DHT20_ADDRESS, rst_msg_1, 3, false);
+        i2c_write_blocking(i2c_instance, DHT20_ADDRESS, rst_msg_2, 3, false);
+        i2c_write_blocking(i2c_instance, DHT20_ADDRESS, rst_msg_3, 3, false);
     }
 }
 
@@ -124,12 +168,12 @@ bool DHT20::needsReset() {
 
 uint8_t DHT20::readStatus() {
     uint8_t ret;
-    i2c_read_blocking(I2C_INST, DHT20_ADDRESS, &ret, 1, false);
+    i2c_read_blocking(i2c_instance, DHT20_ADDRESS, &ret, 1, false);
     return ret;
 }
 
 int DHT20::startMeasurement() {
-    if (i2c_write_blocking(I2C_INST, DHT20_ADDRESS, trigger_measurement, 3, false) == PICO_ERROR_GENERIC)
+    if (i2c_write_blocking(i2c_instance, DHT20_ADDRESS, trigger_measurement, 3, false) == PICO_ERROR_GENERIC)
     {
         return DHT20_ERROR_CONNECT;
     }
@@ -137,7 +181,7 @@ int DHT20::startMeasurement() {
 }
 
 int DHT20::readMeasurement() {
-    if (i2c_read_blocking(I2C_INST, DHT20_ADDRESS, this->bytes, 7, false) == PICO_ERROR_GENERIC)
+    if (i2c_read_blocking(i2c_instance, DHT20_ADDRESS, this->bytes, 7, false) == PICO_ERROR_GENERIC)
     {
         return DHT20_ERROR_CONNECT;
     }
