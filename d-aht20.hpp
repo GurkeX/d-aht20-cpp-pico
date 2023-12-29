@@ -49,7 +49,7 @@ class DHT20 {
 public:
     DHT20(bool auto_init_i2c);
     DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c);
-    DHT20(int I2C_SDA, int I2C_SCL,auto i2c_instance, bool auto_init_i2c)
+    DHT20(int I2C_SDA, int I2C_SCL, int i2c_instance, bool auto_init_i2c)
     //~DHT20();
 
     // Initialize the DHT sensor
