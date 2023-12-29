@@ -8,7 +8,7 @@ Aosong AHT20/DHT20 object oriented sensor library for Raspberry Pi Pico.
 
 DHT20::DHT20(bool auto_init_i2c) {
     // Set default i2c instance
-    i2c_instance = I2C0_INST;
+    i2c_instance = i2c0;
 
     // Set default SDA and SCL pins
     this->I2C_SDA = 4;
@@ -41,7 +41,7 @@ DHT20::DHT20(bool auto_init_i2c) {
 
 DHT20::DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c) {
     // Set default i2c instance
-    i2c_instance = I2C0_INST;
+    i2c_instance = i2c0;
 
     // Set default SDA and SCL pins
     this->I2C_SDA = I2C_SDA;
@@ -73,15 +73,10 @@ DHT20::DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c) {
 }
 
 
-DHT20::DHT20(int I2C_SDA, int I2C_SCL, int i2c_instance, bool auto_init_i2c) {
+DHT20::DHT20(int I2C_SDA, int I2C_SCL, i2c_inst_t* i2c_instance, bool auto_init_i2c) {
     // Set i2c instance
-    if(i2c_instance == 0) {
-        this->i2c_instance = I2C0_INST;
-    }
-    else if(i2c_instance == 1) {
-        this->i2c_instance = I2C1_INST;
-    }
-
+    this->i2c_instance = i2c_instance;
+    
     // Set default SDA and SCL pins
     this->I2C_SDA = I2C_SDA;
     this->I2C_SCL = I2C_SCL;
