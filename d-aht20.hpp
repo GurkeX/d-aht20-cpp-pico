@@ -48,6 +48,7 @@ static const uint8_t __in_flash() trigger_measurement[3] = {0xAC, 0x33, 0x00};
 
 class DHT20 {
 public:
+    DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c);
     DHT20(bool auto_init_i2c);
     //~DHT20();
 

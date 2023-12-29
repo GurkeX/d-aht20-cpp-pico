@@ -1,15 +1,45 @@
 /*
-Aosong AHT20/DHT20 sensor library for Raspberry Pi Pico.
+Aosong AHT20/DHT20 object oriented sensor library for Raspberry Pi Pico.
 */
 
 #include <string.h>
 
 #include "d-aht20.hpp"
 
+DHT20::DHT20(int I2C_SDA, int I2C_SCL, bool auto_init_i2c) {
+    // Set default SDA and SCL pins
+    this->I2C_SDA = I2C_SDA;
+    this->I2C_SCL = I2C_SCL;
+
+    // Set up the i2c interface#
+    if(auto_init_i2c) {
+        init_i2c();
+    }
+
+    printf("DHT20 initialization\n");
+
+    #ifndef DHT20_EXAMPLE_SKIP_INIT_SLEEP
+        sleep_ms(2000);
+    #endif
+        // Set up temp and humid sensor
+        printf("Initialize DHT20.\n");    
+        int sensor_ret = DHT20_init();
+        if (sensor_ret != DHT20_OK)
+        {
+            printf("Failed to initialize the sensor.\n");
+            printf("Sensor return value %d\n", sensor_ret);
+            return;
+        }
+        printf("Initialized DHT20.\n");
+
+        // Sleep for 10ms after successful sensor initialization
+        sleep_ms(10);
+}
+
 DHT20::DHT20(bool auto_init_i2c) {
     // Set default SDA and SCL pins
-    I2C_SDA = 4;
-    I2C_SCL = 5;
+    this->I2C_SDA = 4;
+    this->I2C_SCL = 5;
 
     // Set up the i2c interface#
     if(auto_init_i2c) {
