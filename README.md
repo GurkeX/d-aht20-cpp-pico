@@ -9,45 +9,35 @@ necessary to add as a submodule separately here.
 
 The library is based on [Aosong AHT20/DHT20 – Raspberry Pico SDK port](https://github.com/sampsapenna/dht20-pico), which has been rewritten into an objectoriented cpp library
 
-# rewritten until here
-
 An example pico program is provided in [DHT20 CPP Pico example repository.](https://github.com/GurkeX/D-AHT20-CPP-Pico-example)
 
 ## Usage
 The port can be easily integrated into a Pico SDK project as a git submodule.
 ```bash
-git submodule add https://github.com/sampsapenna/dht20-pico.git
+git submodule add https://github.com/GurkeX/d-aht20-cpp-pico.git
 git submodule update
 ```
 After cloning the repository you need to add the library to `CMakeLists.txt`
 used when building the project. Add the following lines before `target_link_libraries`:
 ```cmake
-add_subdirectory("dht20-pico")
+add_subdirectory("d-aht20-pico")
 
-target_include_directories(dht20 PUBLIC "dht20-pico")
-target_link_directories(rgb_lcd PUBLIC "dht20-pico")
+target_include_directories(d-aht20 PUBLIC "d-aht20-pico")
 ```
 
 Additionally you will need to add the required libraries to linking, by
 adding `hardware_i2c dht20 pico_binary_info` to `target_link_libraries`.
 
-Libary does not initialize i2c, but assumes that program initializes i2c
-for it. Default initialization, sourced from Raspberry Pi Pico documentation,
-can look e.g. like this:
-```c
-    i2c_init(i2c_default, 100 * 1000);
-    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
-    // Make the I2C pins available to picotool
-    bi_decl(bi_2pins_with_func(PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C));
+Libary is able to initialize i2c, when initializing with
 ```
-Header file to include is `DHT20.h`, same as in the Arduino library.
+DHT20 my_sensor(true);
+```
+
+Header file to include is `d-aht20.hpp`.
 
 ## Bugs
-Sensor has been tested for normal operation. AHT20 has not been tested, but
-should work just as well as the DHT20 variant, since the only difference
+Sensor has been tested for normal operation. DHT20 has not been tested, but
+should work just as well as the AHT20 variant, since the only difference
 between the two is packaging AFAIK.
 
 If you encounter a bug, go ahead and open an issue.
