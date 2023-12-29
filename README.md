@@ -20,9 +20,9 @@ git submodule update
 After cloning the repository you need to add the library to `CMakeLists.txt`
 used when building the project. Add the following lines before `target_link_libraries`:
 ```cmake
-add_subdirectory("d-aht20-pico")
+add_subdirectory("d-aht20-cpp-pico")
 
-target_include_directories(d-aht20 PUBLIC "d-aht20-pico")
+target_include_directories(d-aht20cpp PUBLIC "d-aht20-cpp-pico")
 ```
 
 Additionally you will need to add the required libraries to linking, by
